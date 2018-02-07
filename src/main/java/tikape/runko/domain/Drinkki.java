@@ -1,4 +1,7 @@
+
 package tikape.runko.domain;
+
+import java.util.*;
 
 public class Drinkki {
 
