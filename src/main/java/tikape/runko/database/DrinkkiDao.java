@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Drinkki;
 
-public class DrinkkiDao {
+public class DrinkkiDao implements Dao<Drinkki, Integer> {
     
     private Database database;
 
@@ -32,7 +32,7 @@ public class DrinkkiDao {
         Integer id = rs.getInt("id");
         String nimi = rs.getString("nimi");
 
-        Drinkki d = new Drikki(id, nimi);
+        Drinkki d = new Drinkki(id, nimi);
 
         rs.close();
         stmt.close();
