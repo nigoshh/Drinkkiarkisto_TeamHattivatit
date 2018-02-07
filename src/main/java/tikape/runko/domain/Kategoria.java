@@ -1,4 +1,5 @@
 package tikape.runko.domain;
+import java.util.*;
 
 public class Kategoria {
     private Integer id;
