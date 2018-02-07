@@ -1,4 +1,6 @@
 # tikape-runko
 
-Tietokantojen perusteet -kurssilla tehtävän web-sovelluksen pohja.
+Tietokantojen perusteet -kurssilla tehtävä web-sovellus
+Aihe: Drinkkiarkisto
+Ryhmä: Team Hattivatit
 
