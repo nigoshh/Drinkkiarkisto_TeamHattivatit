@@ -36,5 +36,4 @@ public class Drinkki {
         this.raakaAineet.add(raakaAine);
     }
 
-
 }
