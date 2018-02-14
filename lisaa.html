@@ -1,0 +1,25 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> 
+    
+    <head>
+        <title>Lisäys</title>
+        <meta charset="utf-8" />
+    </head>
+    
+    <body>
+        <form method="POST" action="/lisaa">
+            <span>Nimi:</span><br/>
+            <input type="text" name="nimi"/><br/>
+            
+            Kategoria:<br/>
+            <select name="kategoria">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+            </select><br/>
+            
+            <input type="submit" value="Lisää drinkki"/><br/>
+        </form>    
+    </body>
+</html>
