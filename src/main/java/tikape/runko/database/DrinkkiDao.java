@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Drinkki;
+import tikape.runko.domain.RaakaAine;
 
 public class DrinkkiDao implements Dao<Drinkki, Integer> {
     
@@ -31,8 +32,9 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
 
         Integer id = rs.getInt("id");
         String nimi = rs.getString("nimi");
+        String ohje = rs.getString("ohje");
 
-        Drinkki d = new Drinkki(id, nimi);
+        Drinkki d = new Drinkki(id, nimi, ohje);
 
         rs.close();
         stmt.close();
@@ -52,8 +54,9 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
         while (rs.next()) {
             Integer id = rs.getInt("id");
             String nimi = rs.getString("nimi");
+            String ohje = rs.getString("ohje");
 
-            drinkit.add(new Drinkki(id, nimi));
+            drinkit.add(new Drinkki(id, nimi, ohje));
         }
 
         rs.close();
@@ -79,9 +82,10 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
     public void save(Drinkki drinkki) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Drinkki"
-                + " (nimi)"
-                + " VALUES (?)");
+                + " (nimi, ohje)"
+                + " VALUES (?, ?)");
         stmt.setString(1, drinkki.getNimi());
+        stmt.setString(2, drinkki.getOhje());
 
         stmt.executeUpdate();
         stmt.close();
@@ -89,5 +93,22 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
 
         conn.close();
 
+    }
+    
+    public void lisaaRaakaAine(Drinkki drinkki, RaakaAine raakaAine, int jarjestys, String maara) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO DrinkkiRaakaAine"
+                + " (raakaAine_id, drinkki_id, jarjestys, maara)"
+                + " VALUES (?, ?, ?, ?)");
+        stmt.setInt(1, raakaAine.getId());
+        stmt.setInt(2, drinkki.getId());
+        stmt.setInt(3, jarjestys);
+        stmt.setString(4, maara);
+
+        stmt.executeUpdate();
+        stmt.close();
+
+
+        conn.close();
     }
 }
