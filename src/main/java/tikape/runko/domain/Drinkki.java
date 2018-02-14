@@ -8,11 +8,13 @@ public class Drinkki {
     private Integer id;
     private String nimi;
     private List<RaakaAine> raakaAineet;
+    private String ohje;
 
-    public Drinkki(Integer id, String nimi) {
+    public Drinkki(Integer id, String nimi, String ohje) {
         this.id = id;
         this.nimi = nimi;
         this.raakaAineet = new ArrayList<>();
+        this.ohje = ohje;
     }
 
     public Integer getId() {
@@ -37,6 +39,14 @@ public class Drinkki {
     
     public void lisaaRaakaAine(RaakaAine raakaAine) {
         this.raakaAineet.add(raakaAine);
+    }
+    
+    public String getOhje() {
+        return this.ohje;
+    }
+    
+    public void setOhje(String ohje) {
+        this.ohje = ohje;
     }
 
 }
