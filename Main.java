@@ -12,6 +12,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:drinkit.db");
         database.init();
+        
+//        // herokun portille
+//        if (System.getenv("PORT") != null) {
+//            Spark.port(Integer.valueOf(System.getenv("PORT")));
+//        }
 
         DrinkkiDao drinkkiDao = new DrinkkiDao(database);
 
