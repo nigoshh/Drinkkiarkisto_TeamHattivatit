@@ -6,6 +6,9 @@ import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
 import tikape.runko.database.DrinkkiDao;
+import tikape.runko.database.KategoriaDao;
+import tikape.runko.domain.Drinkki;
+import tikape.runko.domain.Kategoria;
 
 public class Main {
 
@@ -19,6 +22,7 @@ public class Main {
 //        }
 
         DrinkkiDao drinkkiDao = new DrinkkiDao(database);
+        KategoriaDao kategoriaDao = new KategoriaDao(database);
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -50,9 +54,9 @@ public class Main {
         
         post("/lisaa", (req, res) -> {
             String nimi = req.queryParams("nimi");
-            System.out.println(nimi);
+            drinkkiDao.save(new Drinkki(0, nimi, ""));
             String kategoria = req.queryParams("kategoria");
-            System.out.println(kategoria);
+            kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkkiDao.findOnebyName(nimi) );
             res.redirect("/");
             return "";
         });
