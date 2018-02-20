@@ -42,6 +42,29 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
 
         return d;
     }
+    
+    public Drinkki findOnebyName(String nimi) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki WHERE nimi = ?");
+        stmt.setObject(1, nimi);
+
+        ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+
+        Integer id = rs.getInt("id");
+        String ohje = rs.getString("ohje");
+
+        Drinkki d = new Drinkki(id, nimi, ohje);
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return d;
+    }
 
     @Override
     public List<Drinkki> findAll() throws SQLException {
@@ -86,7 +109,7 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
                 + " VALUES (?, ?)");
         stmt.setString(1, drinkki.getNimi());
         stmt.setString(2, drinkki.getOhje());
-
+        
         stmt.executeUpdate();
         stmt.close();
 

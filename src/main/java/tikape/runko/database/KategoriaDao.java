@@ -63,6 +63,29 @@ public class KategoriaDao implements Dao<Kategoria, Integer> {
 
         return kategoriat;
     }
+    
+    public Kategoria findOnebyName(String nimi) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Kategoria WHERE nimi = ?");
+        stmt.setObject(1, nimi);
+
+        ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+
+        Integer id = rs.getInt("id");
+        
+
+        Kategoria d = new Kategoria(id, nimi);
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return d;
+    }
 
     @Override
     public void delete(Integer key) throws SQLException {

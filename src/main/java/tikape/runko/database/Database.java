@@ -39,7 +39,7 @@ public class Database {
         ArrayList<String> lista = new ArrayList<>();
 
         // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä
-        lista.add("CREATE TABLE Drinkki (id integer PRIMARY KEY, nimi varchar(255));");
+        lista.add("CREATE TABLE Drinkki (id integer PRIMARY KEY, nimi varchar(255), ohje varchar(1500));");
         lista.add("CREATE TABLE Kategoria (id integer PRIMARY KEY, nimi varchar(255));");
         lista.add("CREATE TABLE RaakaAine (id integer PRIMARY KEY, nimi varchar(255));");
         lista.add("CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id, nimi varchar(255), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));");
