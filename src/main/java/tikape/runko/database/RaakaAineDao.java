@@ -1,4 +1,3 @@
-
 package tikape.runko.database;
 
 import java.sql.Connection;
@@ -10,7 +9,7 @@ import java.util.List;
 import tikape.runko.domain.RaakaAine;
 
 public class RaakaAineDao implements Dao<RaakaAine, Integer> {
-    
+
     private Database database;
 
     public RaakaAineDao(Database database) {
@@ -92,7 +91,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     public List<RaakaAine> findAll() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine ORDER BY nimi");
 
         ResultSet rs = stmt.executeQuery();
         List<RaakaAine> drinkit = new ArrayList<>();
@@ -110,6 +109,41 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         return drinkit;
     }
 
+    public List<String> findStatistics() throws SQLException {
+
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine");
+
+        ResultSet rs = stmt.executeQuery();
+        List<RaakaAine> raakaAineet = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            raakaAineet.add(new RaakaAine(id, nimi));
+        }
+        
+        List<String> tilasto = new ArrayList<>();
+
+        for (int i = 0; i < raakaAineet.size(); i++) {
+            PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS total FROM DrinkkiRaakaAine WHERE raakaAine_id = ?");
+            stmt2.setInt(1, raakaAineet.get(i).getId());
+            ResultSet rs2 = stmt2.executeQuery();
+            while (rs2.next()) {
+                Integer maara = rs2.getInt("total");
+                tilasto.add(raakaAineet.get(i).getNimi() + ", käytössä yhteensä " + maara + " drinkissä");
+            }
+            rs2.close();
+            stmt2.close();
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return tilasto;
+    }
+
     @Override
     public void delete(Integer key) throws SQLException {
         Connection conn = database.getConnection();
@@ -121,7 +155,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         stmt.close();
         conn.close();
     }
-    
+
     @Override
     public void save(RaakaAine raakaAine) throws SQLException {
         Connection conn = database.getConnection();
@@ -132,7 +166,6 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
 
         stmt.executeUpdate();
         stmt.close();
-
 
         conn.close();
 

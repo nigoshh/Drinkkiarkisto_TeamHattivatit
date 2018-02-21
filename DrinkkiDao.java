@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Drinkki;
+import tikape.runko.domain.Kategoria;
 import tikape.runko.domain.RaakaAine;
 
 public class DrinkkiDao implements Dao<Drinkki, Integer> {
@@ -70,7 +71,7 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
     public List<Drinkki> findAll() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki ORDER BY nimi");
 
         ResultSet rs = stmt.executeQuery();
         List<Drinkki> drinkit = new ArrayList<>();
@@ -88,6 +89,34 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
 
         return drinkit;
     }
+    
+    public List<Drinkki> findAllbyCategory(String kategoria) throws SQLException {
+        
+        if (kategoria.equals("kaikki")) {
+            return this.findAll();
+        }
+
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki, DrinkkiKategoria, Kategoria WHERE Drinkki.id = DrinkkiKategoria.drinkki_id AND Kategoria.id = DrinkkiKategoria.kategoria_id AND Kategoria.nimi = ? ORDER BY nimi");
+        stmt.setString(1, kategoria);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Drinkki> drinkit = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+            String ohje = rs.getString("ohje");
+
+            drinkit.add(new Drinkki(id, nimi, ohje));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return drinkit;
+    }
+    
 
     @Override
     public void delete(Integer key) throws SQLException {
