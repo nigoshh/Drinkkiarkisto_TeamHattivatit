@@ -93,7 +93,7 @@ public class Main {
             drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params(":id"))),
                     raakaAineDao.findOnebyName(nimi), jarjestys, maara);
 
-            res.redirect("/drinkit/:id");
+            res.redirect("/drinkit/" + req.params(":id"));
             return "";
             });
         
