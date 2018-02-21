@@ -7,8 +7,38 @@
     </head>
 
     <body>
-        <h1>Hei <span th:text="${drinkki.nimi}">drinkki</span>!</h1>
+        <h1>Tervetuloa!</h1>
 
         <p>Olet saapunut drinkin <span th:text="${drinkki.nimi}">drinkki</span> sivulle.</p>
+
+        <p>Drinkin <span th:text="${drinkki.nimi}">drinkki</span> raaka-aineita:</p>
+
+        <ol>
+            <li th:each="raakaAineDrinkissa: ${raakaAineetDrinkissa}">
+                <span th:text="${raakaAineDrinkissa.nimi}">raaka-aineen nimi</span>
+            </li>
+        </ol>
+
+        <p>Lisää raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
+        
+        <form method="POST" th:action="${'/drinkit/' + drinkki.id}">
+
+            <select name="nimi">
+                <option th:each="raakaAineEiDrinkissa : ${raakaAineetEiDrinkissa}" th:value="${raakaAineEiDrinkissa.nimi}" th:text="${raakaAineEiDrinkissa.nimi}"></option>
+            </select>
+            
+            <span>Määrä:</span>
+            <input type="text" name="maara"/>
+            
+            <span>Järjestys:</span>
+            <input type="text" name="jarjestys"/>
+
+
+            <input type="submit" value="Lisää raaka-aine"/>    
+        </form>    
+        
+        
+
+        <br/><a href="/raaka-aineet">Luo uusi raaka-aine:</a>
     </body>
 </html>
