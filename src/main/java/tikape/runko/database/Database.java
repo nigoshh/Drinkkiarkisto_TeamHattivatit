@@ -43,7 +43,7 @@ public class Database {
         lista.add("CREATE TABLE Kategoria (id integer PRIMARY KEY, nimi varchar(255));");
         lista.add("CREATE TABLE RaakaAine (id integer PRIMARY KEY, nimi varchar(255));");
         lista.add("CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id, nimi varchar(255), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));");
-        lista.add("CREATE TABLE DrinkkiRaakaAine (raakaaine_id integer, drinkki_id integer, nimi varchar(255), jarjestys varchar(500), maara varchar(300), ohje varchar(1500), FOREIGN KEY (raakaaine_id) REFERENCES RaakaAine(id), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id));");
+        lista.add("CREATE TABLE DrinkkiRaakaAine (raakaaine_id integer, drinkki_id integer, jarjestys integer, maara varchar(300), FOREIGN KEY (raakaaine_id) REFERENCES RaakaAine(id), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id));");
         lista.add("INSERT INTO Drinkki (nimi) VALUES ('Vodka Martini');");
         lista.add("INSERT INTO Drinkki (nimi) VALUES ('Valkovenäläinen');");
         lista.add("INSERT INTO Drinkki (nimi) VALUES ('Kelkka');");
@@ -54,6 +54,18 @@ public class Database {
         lista.add("INSERT INTO DrinkkiKategoria (kategoria_id, drinkki_id) VALUES (3, 1);");
         lista.add("INSERT INTO DrinkkiKategoria (kategoria_id, drinkki_id) VALUES (3, 2);");
         lista.add("INSERT INTO DrinkkiKategoria (kategoria_id, drinkki_id) VALUES (1, 3);");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Appelsiinimehu');");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Maito');");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Vodka');");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Valkoinen vermutti');");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Kaakaojauhe');");
+        lista.add("INSERT INTO RaakaAine (nimi) VALUES ('Passionhedelmälikööri');");
+        lista.add("INSERT INTO DrinkkiRaakaAine (raakaaine_id, drinkki_id,jarjestys, maara) VALUES (1, 3, 1, '10 cl');");
+        lista.add("INSERT INTO DrinkkiRaakaAine (raakaaine_id, drinkki_id,jarjestys, maara) VALUES (2, 2, 1, '5 cl');");
+        lista.add("INSERT INTO DrinkkiRaakaAine (raakaaine_id, drinkki_id,jarjestys, maara) VALUES (3, 1, 1, '5 cl');");
+        lista.add("INSERT INTO DrinkkiRaakaAine (raakaaine_id, drinkki_id,jarjestys, maara) VALUES (3, 2, 2, '5 cl');");
+        lista.add("INSERT INTO DrinkkiRaakaAine (raakaaine_id, drinkki_id,jarjestys, maara) VALUES (3, 3, 2, '5 cl');");
+        
         
         return lista;
     }
