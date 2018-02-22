@@ -68,7 +68,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
        Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.id,"
                 + "RaakaAine.nimi FROM RaakaAine, DrinkkiRaakaAine WHERE DrinkkiRaakaAine.drinkki_id = ?"
-                + "AND DrinkkiRaakaAine.raakaaine_id = RaakaAine.id");
+                + "AND DrinkkiRaakaAine.raakaaine_id = RaakaAine.id ORDER BY RaakaAine.nimi");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();
