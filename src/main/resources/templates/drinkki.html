@@ -13,11 +13,13 @@
 
         <p>Drinkin <span th:text="${drinkki.nimi}">drinkki</span> raaka-aineita:</p>
 
-        <ol>
+        <ul>
             <li th:each="raakaAineDrinkissa: ${raakaAineetDrinkissa}">
-                <span th:text="${raakaAineDrinkissa.nimi}">raaka-aineen nimi</span>
+                <span th:text="${raakaAineDrinkissa.nimi}">raaka-aineen nimi</span>, 
+                <span th:text="${raakaAineDrinkissa.maara}">maara</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a th:href="${'/drinkit/' + drinkki.id + '/poistaRaaka-aine/' + raakaAineDrinkissa.id}">Poista</a>
             </li>
-        </ol>
+        </ul>
 
         <p>Lisää raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
         
@@ -35,10 +37,10 @@
 
 
             <input type="submit" value="Lisää raaka-aine"/>    
-        </form>    
+        </form>
         
-
-        <br/><a href="/raaka-aineet">Luo uusi raaka-aine</a>
+        <br/><a href="/raaka-aineet">Tarkastele ja lisää raaka-aineita</a>
+        <p><a th:href="${'/drinkit/poista/' + drinkki.id}">Poista drinkki <span th:text="${drinkki.nimi}">drinkki</span></a></p>
         <br/><p><a href="/drinkit">Tästä drinkkilistaukseen</a></p>
         <p><a href="/lisaa">Lisää drinkki</a></p>
     </body>

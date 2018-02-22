@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.RaakaAine;
+import tikape.runko.domain.RaakaAineDrinkissa;
 
 public class RaakaAineDao implements Dao<RaakaAine, Integer> {
 
@@ -64,20 +65,22 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     
     
     
-    public List<RaakaAine> findAllInDrink(Integer key) throws SQLException {
+    public List<RaakaAineDrinkissa> findAllInDrink(Integer key) throws SQLException {
        Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.id,"
-                + "RaakaAine.nimi FROM RaakaAine, DrinkkiRaakaAine WHERE DrinkkiRaakaAine.drinkki_id = ?"
-                + "AND DrinkkiRaakaAine.raakaaine_id = RaakaAine.id ORDER BY RaakaAine.nimi");
+                + "RaakaAine.nimi, DrinkkiRaakaAine.maara FROM RaakaAine, "
+                + "DrinkkiRaakaAine WHERE DrinkkiRaakaAine.drinkki_id = ?"
+                + "AND DrinkkiRaakaAine.raakaaine_id = RaakaAine.id ORDER BY DrinkkiRaakaAine.jarjestys");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();
-        List<RaakaAine> raakaAineet = new ArrayList<>();
+        List<RaakaAineDrinkissa> raakaAineet = new ArrayList<>();
         while (rs.next()) {
             Integer id = rs.getInt("id");
             String nimi = rs.getString("nimi");
+            String maara = rs.getString("maara");
 
-            raakaAineet.add(new RaakaAine(id, nimi));
+            raakaAineet.add(new RaakaAineDrinkissa(id, nimi, maara));
         }
 
         rs.close();
@@ -147,12 +150,27 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM RaakaAine WHERE id = ?");
+        
+        conn.setAutoCommit(false);
+        
+        PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM RaakaAine WHERE id = ?");
+        PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM DrinkkiRaakaAine WHERE raakaaine_id = ?");
 
-        stmt.setInt(1, key);
-        stmt.executeUpdate();
+        stmt1.setInt(1, key);
+        stmt2.setInt(1, key);
+        
+        int rowAffected = stmt1.executeUpdate();
+        
+        if (rowAffected != 1) {
+            conn.rollback();
+        }
+        
+        stmt2.executeUpdate();
 
-        stmt.close();
+        conn.commit();
+
+        stmt1.close();
+        stmt2.close();
         conn.close();
     }
 

@@ -14,6 +14,7 @@ import tikape.runko.database.RaakaAineDao;
 import tikape.runko.domain.Drinkki;
 import tikape.runko.domain.Kategoria;
 import tikape.runko.domain.RaakaAine;
+import tikape.runko.domain.RaakaAineDrinkissa;
 
 public class Main {
 
@@ -47,6 +48,39 @@ public class Main {
 
             return new ModelAndView(map, "drinkit");
         }, new ThymeleafTemplateEngine());
+        
+        get("/drinkit/poista/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            drinkkiDao.delete(Integer.parseInt(req.params("id")));
+            
+            res.redirect("/drinkit");
+
+            return new ModelAndView(map, "drinkki");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/drinkit/:drinkkiId/poistaRaaka-aine/:raId", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            int drinkkiId = Integer.parseInt(req.params("drinkkiId"));
+            int raId = Integer.parseInt(req.params("raId"));
+            
+            drinkkiDao.poistaRaakaAine(drinkkiId, raId);
+            
+            res.redirect("/drinkit/" + req.params("drinkkiId"));
+
+            return new ModelAndView(map, "drinkki");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/raaka-aineet/poista/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            raakaAineDao.delete(Integer.parseInt(req.params("id")));
+            
+            res.redirect("/raaka-aineet");
+
+            return new ModelAndView(map, "raaka-aineet");
+        }, new ThymeleafTemplateEngine());
 
         get("/drinkit/:id", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -54,7 +88,8 @@ public class Main {
 
             List<RaakaAine> kaikkiRaakaAineet = raakaAineDao.findAll();
 
-            List<RaakaAine> raakaAineetDrinkissa = raakaAineDao.findAllInDrink(Integer.parseInt(req.params("id")));
+            List<RaakaAineDrinkissa> raakaAineetDrinkissa =
+                    raakaAineDao.findAllInDrink(Integer.parseInt(req.params("id")));
 
             List<RaakaAine> raakaAineetEiDrinkissa = kaikkiRaakaAineet.stream()
                     .filter(r -> !raakaAineetDrinkissa.contains(r))
@@ -78,19 +113,17 @@ public class Main {
             drinkkiDao.save(new Drinkki(0, nimi, ""));
             String kategoria = req.queryParams("kategoria");
             kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkkiDao.findOnebyName(nimi));
-            res.redirect("/");
+            res.redirect("/drinkit");
             return "";
         });
 
         post("/drinkit/:id", (req, res) -> {
-//            Integer taskId = Integer.parseInt(req.params(":id"));
-//            Integer userId = Integer.parseInt(req.queryParams("userId"));
 
             String nimi = req.queryParams("nimi");
             int jarjestys = Integer.parseInt(req.queryParams("jarjestys"));
             String maara = req.queryParams("maara");
             
-            drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params(":id"))),
+            drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params("id"))),
                     raakaAineDao.findOnebyName(nimi), jarjestys, maara);
 
             res.redirect("/drinkit/" + req.params(":id"));

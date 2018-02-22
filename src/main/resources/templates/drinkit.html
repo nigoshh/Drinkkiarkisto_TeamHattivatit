@@ -16,7 +16,8 @@
 
         <ul>
             <li th:each="drinkki: ${drinkit}">
-                <span th:text="${drinkki.nimi}">drinkin nimi</span> <a th:href="${'/drinkit/' + drinkki.id}">linkki</a>
+                <a th:href="${'/drinkit/' + drinkki.id}" th:text="${drinkki.nimi}">linkki</a>
+                <a th:href="${'/drinkit/poista/' + drinkki.id}">Poista</a>
             </li>
         </ul>
         

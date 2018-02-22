@@ -121,12 +121,33 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Drinkki WHERE id = ?");
+        
+        conn.setAutoCommit(false);
+        
+        PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM Drinkki WHERE id = ?");
+        
+        PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM DrinkkiRaakaAine WHERE drinkki_id  = ?");
+        
+        PreparedStatement stmt3 = conn.prepareStatement("DELETE FROM DrinkkiKategoria WHERE drinkki_id  = ?");
 
-        stmt.setInt(1, key);
-        stmt.executeUpdate();
+        stmt1.setInt(1, key);
+        stmt2.setInt(1, key);
+        stmt3.setInt(1, key);
+        
+        int rowAffected = stmt1.executeUpdate();
+        
+        if (rowAffected != 1) {
+            conn.rollback();
+        }
+        
+        stmt2.executeUpdate();
+        stmt3.executeUpdate();
+        
+        conn.commit();
 
-        stmt.close();
+        stmt1.close();
+        stmt2.close();
+        stmt3.close();
         conn.close();
     }
     
@@ -161,6 +182,20 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
         stmt.close();
 
 
+        conn.close();
+    }
+    
+    public void poistaRaakaAine(Integer drinkki_id, Integer raakaaine_id) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM DrinkkiRaakaAine "
+                + "WHERE drinkki_id = ? AND raakaaine_id = ?");
+
+        stmt.setInt(1, drinkki_id);
+        stmt.setInt(2, raakaaine_id);
+        
+        stmt.executeUpdate();
+
+        stmt.close();
         conn.close();
     }
 }
