@@ -89,6 +89,29 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
 
         return raakaAineet; 
     }
+    
+    public List<RaakaAine> findAllNotInDrink(Integer key) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM RaakaAine "
+                + "WHERE id NOT IN (SELECT DISTINCT raakaaine_id from DrinkkiRaakaAine "
+                + "WHERE DrinkkiRaakaAine.drinkki_id = ?) ORDER BY nimi");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();
+        List<RaakaAine> raakaAineet = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            raakaAineet.add(new RaakaAine(id, nimi));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return raakaAineet; 
+    }
 
     @Override
     public List<RaakaAine> findAll() throws SQLException {

@@ -110,9 +110,10 @@ public class Main {
                 drinkkiDao.save(new Drinkki(0, nimi, ""));
 
                 String kategoria = req.queryParams("kategoria");
-                kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkkiDao.findOnebyName(nimi));
+                Drinkki lisatty = drinkkiDao.findOnebyName(nimi);
+                kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), lisatty);
                 
-                redirUrl += "drinkit";
+                redirUrl += "drinkit/" + lisatty.getId() + "/ok";
             }
             
             res.redirect(redirUrl);
@@ -121,7 +122,9 @@ public class Main {
         
         get("/drinkit/:id/:virhe", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("drinkki", drinkkiDao.findOne(Integer.parseInt(req.params("id"))));
+            
+            int drinkkiId = Integer.parseInt(req.params("id"));
+            map.put("drinkki", drinkkiDao.findOne(drinkkiId));
             
             String virhe = "";
             
@@ -132,14 +135,10 @@ public class Main {
             
             map.put("virhe", virhe);
 
-            List<RaakaAine> kaikkiRaakaAineet = raakaAineDao.findAll();
-
             List<RaakaAineDrinkissa> raakaAineetDrinkissa =
-                    raakaAineDao.findAllInDrink(Integer.parseInt(req.params("id")));
+                    raakaAineDao.findAllInDrink(drinkkiId);
 
-            List<RaakaAine> raakaAineetEiDrinkissa = kaikkiRaakaAineet.stream()
-                    .filter(r -> !raakaAineetDrinkissa.contains(r))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            List<RaakaAine> raakaAineetEiDrinkissa = raakaAineDao.findAllNotInDrink(drinkkiId);
 
             map.put("raakaAineetEiDrinkissa", raakaAineetEiDrinkissa);
             map.put("raakaAineetDrinkissa", raakaAineetDrinkissa);
