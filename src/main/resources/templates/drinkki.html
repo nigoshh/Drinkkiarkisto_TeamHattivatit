@@ -23,10 +23,13 @@
 
         <p>Lisää raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
         
-        <form method="POST" th:action="${'/drinkit/' + drinkki.id}">
+        <p th:text="${virhe}" style="color:red;">error message</p>
+        
+        <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/ok'}">
 
             <select name="nimi">
-                <option th:each="raakaAineEiDrinkissa : ${raakaAineetEiDrinkissa}" th:value="${raakaAineEiDrinkissa.nimi}" th:text="${raakaAineEiDrinkissa.nimi}"></option>
+                <option th:each="raakaAineEiDrinkissa : ${raakaAineetEiDrinkissa}" 
+                        th:value="${raakaAineEiDrinkissa.nimi}" th:text="${raakaAineEiDrinkissa.nimi}"></option>
             </select>
             
             <span>Määrä:</span>
@@ -39,9 +42,9 @@
             <input type="submit" value="Lisää raaka-aine"/>    
         </form>
         
-        <br/><a href="/raaka-aineet">Tarkastele ja lisää raaka-aineita</a>
+        <br/><a href="/raaka-aineet/ok">Tarkastele ja lisää raaka-aineita</a>
         <p><a th:href="${'/drinkit/poista/' + drinkki.id}">Poista drinkki <span th:text="${drinkki.nimi}">drinkki</span></a></p>
         <br/><p><a href="/drinkit">Tästä drinkkilistaukseen</a></p>
-        <p><a href="/lisaa">Lisää drinkki</a></p>
+        <p><a href="/lisaa/ok">Lisää drinkki</a></p>
     </body>
 </html>
