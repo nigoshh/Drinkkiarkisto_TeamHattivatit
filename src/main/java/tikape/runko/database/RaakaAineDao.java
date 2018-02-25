@@ -211,4 +211,20 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         conn.close();
 
     }
+    
+    public boolean onkoKaytossa(int id) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt2 = conn.prepareStatement("SELECT COUNT(*) AS total FROM DrinkkiRaakaAine WHERE raakaAine_id = ?");
+        stmt2.setInt(1, id);
+        ResultSet rs2 = stmt2.executeQuery();
+        int maara = 0;
+        if (rs2.next()) {
+            maara = rs2.getInt("total");
+        }
+        
+        stmt2.close();
+        conn.close();
+        
+        return maara != 0;
+    }
 }
