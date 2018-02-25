@@ -20,7 +20,7 @@ import tikape.runko.domain.RaakaAine;
 import tikape.runko.domain.RaakaAineDrinkissa;
 
 public class Main {
-    
+
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:drinkit.db");
 
@@ -43,39 +43,39 @@ public class Main {
 
             return new ModelAndView(map, "drinkit");
         }, new ThymeleafTemplateEngine());
-        
+
         get("/drinkit/kategoriat/:kategoria", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("drinkit", drinkkiDao.findAllbyCategory(req.params("kategoria")));
-            
+
             map.put("kategoria", req.params("kategoria"));
 
             return new ModelAndView(map, "drinkit");
         }, new ThymeleafTemplateEngine());
-        
+
         get("/drinkit/poista/:id", (req, res) -> {
             HashMap map = new HashMap<>();
-            
+
             drinkkiDao.delete(Integer.parseInt(req.params("id")));
-            
+
             res.redirect("/drinkit");
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
-        
+
         get("/drinkit/:drinkkiId/poistaRaaka-aine/:raId", (req, res) -> {
             HashMap map = new HashMap<>();
-            
+
             int drinkkiId = Integer.parseInt(req.params("drinkkiId"));
             int raId = Integer.parseInt(req.params("raId"));
-            
+
             drinkkiDao.poistaRaakaAine(drinkkiId, raId);
-            
+
             res.redirect("/drinkit/" + req.params("drinkkiId") + "/ok");
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
-        
+
         get("/drinkit/:drinkkiId/poistaKategoria/:kId", (req, res) -> {
             HashMap map = new HashMap<>();
 
@@ -88,14 +88,14 @@ public class Main {
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
-        
+
         get("/raaka-aineet/poista/:id", (req, res) -> {
             HashMap map = new HashMap<>();
-            
+
             int raId = Integer.parseInt(req.params("id"));
-            
+
             String redirUrl = "/raaka-aineet/";
-            
+
             if (raakaAineDao.onkoKaytossa(raId)) {
                 redirUrl += "s";
             } else {
@@ -111,13 +111,13 @@ public class Main {
         get("/lisaa/:virhe", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("lisaa", drinkkiDao.findAll());
-            
+
             String virhe = "";
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Drinkin nimi-kenttä";
             } else if (req.params("virhe").equals("d")) {
-                virhe += "Virhe! Drinkin nimi on jo käytössä. "
-                        + "Ole hyvä ja valitse toinen nimi.";
+                virhe += "Virhe! Drinkin nimi on jo käytössä; "
+                        + "ole hyvä ja valitse toinen nimi";
             }
             map.put("virhe", virhe);
 
@@ -126,143 +126,141 @@ public class Main {
 
         post("/lisaa/:virhe", (req, res) -> {
             String virhe = "";
-            
+
             String nimi = req.queryParams("nimi");
             if (nimi.isEmpty()) {
                 virhe += "v";
             } else if (drinkkiDao.findOnebyName(nimi) != null) {
                 virhe += "d";
             }
-            
+
             String redirUrl = "/";
-            
+
             if (!virhe.isEmpty()) {
                 redirUrl += "lisaa/" + virhe;
             } else {
                 drinkkiDao.save(new Drinkki(0, nimi, ""));
-                
+
                 Drinkki lisatty = drinkkiDao.findOnebyName(nimi);
                 redirUrl += "drinkit/" + lisatty.getId() + "/ok";
             }
-            
+
             res.redirect(redirUrl);
             return "";
         });
-        
+
         get("/drinkit/:id/:virhe", (req, res) -> {
             HashMap map = new HashMap<>();
-            
+
             int drinkkiId = Integer.parseInt(req.params("id"));
             map.put("drinkki", drinkkiDao.findOne(drinkkiId));
-            
+
             String virhe = "";
-            
+
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Määrä ja Järjestys -kentät"
                         + " (Järjestys-kenttään pelkästään kokonaislukuja)";
             }
-            
+
             map.put("virhe", virhe);
 
-            List<RaakaAineDrinkissa> raakaAineetDrinkissa =
-                    raakaAineDao.findAllInDrink(drinkkiId);
+            List<RaakaAineDrinkissa> raakaAineetDrinkissa
+                    = raakaAineDao.findAllInDrink(drinkkiId);
 
             List<RaakaAine> raakaAineetEiDrinkissa = raakaAineDao.findAllNotInDrink(drinkkiId);
 
             map.put("raakaAineetEiDrinkissa", raakaAineetEiDrinkissa);
             map.put("raakaAineetDrinkissa", raakaAineetDrinkissa);
-            
+
             List<Kategoria> drinkkiEiKategorioissa = kategoriaDao.findAllNotInDrink(drinkkiId);
             List<Kategoria> drinkinKategoriat = kategoriaDao.findAllInDrink(drinkkiId);
-            
+
             map.put("drinkkiEiKategorioissa", drinkkiEiKategorioissa);
             map.put("DrinkinKategoriat", drinkinKategoriat);
-            
-            
-            
+
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
 
         post("/drinkit/:id/:virhe", (req, res) -> {
-            
-            if(req.params("virhe").equals("kategoria")){
+
+            if (req.params("virhe").equals("kategoria")) {
                 String kategoria = req.queryParams("kategoria");
                 Drinkki drinkki = drinkkiDao.findOne(Integer.parseInt(req.params("id")));
                 kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkki);
-                
-                res.redirect("/drinkit/" + req.params("id") + "/ok");
-                
-            } else if(req.params("virhe").equals("ohje")) {
-              String ohje = req.queryParams("ohje");
-              drinkkiDao.lisaaOhje(ohje, Integer.parseInt(req.params("id")));
-                
-               res.redirect("/drinkit/" + req.params("id") + "/ok");
-            } else {
-            boolean virhe = false;
 
-            String nimi = req.queryParams("nimi");
-            if (nimi.isEmpty()) {
-                virhe = true;
-            }
-            
-            int jarjestys = 0;
-            if (isInteger(req.queryParams("jarjestys"))) {
-                jarjestys = Integer.parseInt(req.queryParams("jarjestys"));
+                res.redirect("/drinkit/" + req.params("id") + "/ok");
+
+            } else if (req.params("virhe").equals("ohje")) {
+                String ohje = req.queryParams("ohje");
+                drinkkiDao.lisaaOhje(ohje, Integer.parseInt(req.params("id")));
+
+                res.redirect("/drinkit/" + req.params("id") + "/ok");
             } else {
-                virhe = true;
-            }
-            
-            String maara = req.queryParams("maara");
-            if (maara.isEmpty()) {
-                virhe = true;
-            }
-            
-            String redirUrl = "/drinkit/" + req.params("id") + "/";
-            
-            if (virhe) {
-                redirUrl += "v";
-            } else {
-                drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params("id"))),
-                    raakaAineDao.findOnebyName(nimi), jarjestys, maara);
-                redirUrl += "ok";
-            }
-            
-            res.redirect(redirUrl);
+                boolean virhe = false;
+
+                String nimi = req.queryParams("nimi");
+                if (nimi.isEmpty()) {
+                    virhe = true;
+                }
+
+                int jarjestys = 0;
+                if (isInteger(req.queryParams("jarjestys"))) {
+                    jarjestys = Integer.parseInt(req.queryParams("jarjestys"));
+                } else {
+                    virhe = true;
+                }
+
+                String maara = req.queryParams("maara");
+                if (maara.isEmpty()) {
+                    virhe = true;
+                }
+
+                String redirUrl = "/drinkit/" + req.params("id") + "/";
+
+                if (virhe) {
+                    redirUrl += "v";
+                } else {
+                    drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params("id"))),
+                            raakaAineDao.findOnebyName(nimi), jarjestys, maara);
+                    redirUrl += "ok";
+                }
+
+                res.redirect(redirUrl);
             }
             return "";
-            });
-        
+        });
+
         get("/raaka-aineet/:virhe", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("raakaAineet", raakaAineDao.findAll());
             map.put("tilasto", raakaAineDao.findStatistics());
-            
+
             String virhe = "";
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Raaka-aineen nimi-kenttä";
             } else if (req.params("virhe").equals("d")) {
-                virhe += "Virhe! Raaka-aineen nimi on jo olemassa. "
-                        + "Ole hyvä ja valitse toinen raaka-aineen nimi.";
+                virhe += "Virhe! Raaka-aineen nimi on jo olemassa; "
+                        + "ole hyvä ja valitse toinen raaka-aineen nimi";
             } else if (req.params("virhe").equals("s")) {
-                virhe += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä.";
+                virhe += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä";
             }
             map.put("virhe", virhe);
 
             return new ModelAndView(map, "raaka-aineet");
         }, new ThymeleafTemplateEngine());
-        
+
         post("/raaka-aineet/:virhe", (req, res) -> {
             String virhe = "";
-            
+
             String nimi = req.queryParams("nimi");
             if (nimi.isEmpty()) {
                 virhe += "v";
             } else if (raakaAineDao.findOnebyName(nimi) != null) {
                 virhe += "d";
             }
-            
+
             String redirUrl = "/raaka-aineet/";
-            
+
             if (!virhe.isEmpty()) {
                 redirUrl += virhe;
             } else {
@@ -270,7 +268,7 @@ public class Main {
                 raakaAineDao.save(raakaAine);
                 redirUrl += "ok";
             }
-            
+
             res.redirect(redirUrl);
             return "";
         });

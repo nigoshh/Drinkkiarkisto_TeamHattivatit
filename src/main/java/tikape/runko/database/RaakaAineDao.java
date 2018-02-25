@@ -16,7 +16,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     public RaakaAineDao(Database database) {
         this.database = database;
     }
-    
+
     public RaakaAine findOnebyName(String nimi) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine WHERE nimi = ?");
@@ -62,11 +62,9 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
 
         return r;
     }
-    
-    
-    
+
     public List<RaakaAineDrinkissa> findAllInDrink(Integer key) throws SQLException {
-       Connection connection = database.getConnection();
+        Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.id,"
                 + "RaakaAine.nimi, DrinkkiRaakaAine.maara FROM RaakaAine, "
                 + "DrinkkiRaakaAine WHERE DrinkkiRaakaAine.drinkki_id = ?"
@@ -87,9 +85,9 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         stmt.close();
         connection.close();
 
-        return raakaAineet; 
+        return raakaAineet;
     }
-    
+
     public List<RaakaAine> findAllNotInDrink(Integer key) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM RaakaAine "
@@ -110,7 +108,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         stmt.close();
         conn.close();
 
-        return raakaAineet; 
+        return raakaAineet;
     }
 
     @Override
@@ -138,29 +136,19 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     public List<String> findStatistics() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine");
+        PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.nimi "
+                + "AS nimi, COUNT(*) AS total FROM RaakaAine LEFT JOIN "
+                + "DrinkkiRaakaAine ON RaakaAine.id = DrinkkiRaakaAine.raakaaine_id "
+                + "GROUP BY nimi ORDER BY total DESC, nimi");
 
         ResultSet rs = stmt.executeQuery();
-        List<RaakaAine> raakaAineet = new ArrayList<>();
-        while (rs.next()) {
-            Integer id = rs.getInt("id");
-            String nimi = rs.getString("nimi");
 
-            raakaAineet.add(new RaakaAine(id, nimi));
-        }
-        
         List<String> tilasto = new ArrayList<>();
 
-        for (int i = 0; i < raakaAineet.size(); i++) {
-            PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS total FROM DrinkkiRaakaAine WHERE raakaAine_id = ?");
-            stmt2.setInt(1, raakaAineet.get(i).getId());
-            ResultSet rs2 = stmt2.executeQuery();
-            while (rs2.next()) {
-                Integer maara = rs2.getInt("total");
-                tilasto.add(raakaAineet.get(i).getNimi() + ", käytössä yhteensä " + maara + " drinkissä");
-            }
-            rs2.close();
-            stmt2.close();
+        while (rs.next()) {
+            int maara = rs.getInt("total");
+            String nimi = rs.getString("nimi");
+            tilasto.add(nimi + ", käytössä yhteensä " + maara + " drinkissä");
         }
 
         rs.close();
@@ -173,21 +161,21 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         Connection conn = database.getConnection();
-        
+
         conn.setAutoCommit(false);
-        
+
         PreparedStatement stmt1 = conn.prepareStatement("DELETE FROM RaakaAine WHERE id = ?");
         PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM DrinkkiRaakaAine WHERE raakaaine_id = ?");
 
         stmt1.setInt(1, key);
         stmt2.setInt(1, key);
-        
+
         int rowAffected = stmt1.executeUpdate();
-        
+
         if (rowAffected != 1) {
             conn.rollback();
         }
-        
+
         stmt2.executeUpdate();
 
         conn.commit();
@@ -211,7 +199,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         conn.close();
 
     }
-    
+
     public boolean onkoKaytossa(int id) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt2 = conn.prepareStatement("SELECT COUNT(*) AS total FROM DrinkkiRaakaAine WHERE raakaAine_id = ?");
@@ -221,10 +209,10 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
         if (rs2.next()) {
             maara = rs2.getInt("total");
         }
-        
+
         stmt2.close();
         conn.close();
-        
+
         return maara != 0;
     }
 }
