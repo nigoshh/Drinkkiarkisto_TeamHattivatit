@@ -197,5 +197,7 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
 
         stmt.close();
         conn.close();
-    }
+    } 
+    
+    
 }

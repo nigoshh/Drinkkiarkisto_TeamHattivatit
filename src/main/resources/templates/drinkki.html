@@ -7,9 +7,8 @@
     </head>
 
     <body>
-        <h1>Tervetuloa!</h1>
+        <h1><span th:text="${drinkki.nimi}">drinkki</span></h1>
 
-        <p>Olet saapunut drinkin <span th:text="${drinkki.nimi}">drinkki</span> sivulle.</p>
         <p>Täältä näet drinkin ominaisuuksia, ja pystyt muokkaamaan niitä.</p>
 
         <p>Drinkin <span th:text="${drinkki.nimi}">drinkki</span> raaka-aineita:</p>
@@ -40,7 +39,26 @@
             <input type="text" name="jarjestys"/>
 
 
-            <input type="submit" value="Lisää raaka-aine"/>    
+            <input type="submit" value="Lisää raaka-aine"/> <br/> <br/>   
+        </form> 
+        
+        <p>Drinkki kuuluu kategorioihin:</p> 
+        <ul> 
+            <li th:each="DrinkinKategoria: ${DrinkinKategoriat}"> 
+                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>
+                <a th:href="${'/drinkit/' + drinkki.id + '/poistaKategoria/' + DrinkinKategoria.id}">Poista</a>
+            </li>
+        </ul>  
+        
+        <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/kategoria'}">
+            
+            Kategoria:<br/><br/>
+            <select name="kategoria">
+                <option th:each="drinkkiEiKategoriassa : ${drinkkiEiKategorioissa}" 
+                        th:value="${drinkkiEiKategoriassa.nimi}" th:text="${drinkkiEiKategoriassa.nimi}"></option>
+            </select><br/><br/>
+            <input type="submit" value="Lisää kategoria"/>
+            
         </form>
         
         <br/><a href="/raaka-aineet/ok">Tarkastele ja lisää raaka-aineita</a>

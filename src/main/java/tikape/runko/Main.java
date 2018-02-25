@@ -74,6 +74,19 @@ public class Main {
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
         
+        get("/drinkit/:drinkkiId/poistaKategoria/:kId", (req, res) -> {
+            HashMap map = new HashMap<>();
+
+            int drinkkiId = Integer.parseInt(req.params("drinkkiId"));
+            int kId = Integer.parseInt(req.params("kId"));
+
+            kategoriaDao.poistaDrinkki(kId, drinkkiId);
+
+            res.redirect("/drinkit/" + req.params("drinkkiId") + "/ok");
+
+            return new ModelAndView(map, "drinkki");
+        }, new ThymeleafTemplateEngine());
+        
         get("/raaka-aineet/poista/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             
@@ -116,11 +129,8 @@ public class Main {
                 redirUrl += "lisaa/" + virhe;
             } else {
                 drinkkiDao.save(new Drinkki(0, nimi, ""));
-
-                String kategoria = req.queryParams("kategoria");
-                Drinkki lisatty = drinkkiDao.findOnebyName(nimi);
-                kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), lisatty);
                 
+                Drinkki lisatty = drinkkiDao.findOnebyName(nimi);
                 redirUrl += "drinkit/" + lisatty.getId() + "/ok";
             }
             
@@ -150,12 +160,26 @@ public class Main {
 
             map.put("raakaAineetEiDrinkissa", raakaAineetEiDrinkissa);
             map.put("raakaAineetDrinkissa", raakaAineetDrinkissa);
-
+            
+            List<Kategoria> drinkkiEiKategorioissa = kategoriaDao.findAllNotInDrink(drinkkiId);
+            List<Kategoria> drinkinKategoriat = kategoriaDao.findAllInDrink(drinkkiId);
+            
+            map.put("drinkkiEiKategorioissa", drinkkiEiKategorioissa);
+            map.put("DrinkinKategoriat", drinkinKategoriat);
+            drinkinKategoriat.stream().forEach(s -> System.out.println(s.getNimi()));
+            
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
 
         post("/drinkit/:id/:virhe", (req, res) -> {
-            
+            if(req.params("virhe").equals("kategoria")){
+                String kategoria = req.queryParams("kategoria");
+                Drinkki drinkki = drinkkiDao.findOne(Integer.parseInt(req.params("id")));
+                kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkki);
+                
+                res.redirect("/drinkit/" + req.params("id") + "/ok");
+                
+            } else {
             boolean virhe = false;
 
             String nimi = req.queryParams("nimi");
@@ -184,8 +208,9 @@ public class Main {
                     raakaAineDao.findOnebyName(nimi), jarjestys, maara);
                 redirUrl += "ok";
             }
-
+            
             res.redirect(redirUrl);
+            }
             return "";
             });
         
