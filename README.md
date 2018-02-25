@@ -1,4 +1,4 @@
-# tikape-runko
+# Drinkkiarkisto_TeamHattivatit
 
 Tietokantojen perusteet -kurssilla tehtävä web-sovellus
 
