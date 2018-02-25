@@ -158,12 +158,14 @@ public class Main {
             
             map.put("drinkkiEiKategorioissa", drinkkiEiKategorioissa);
             map.put("DrinkinKategoriat", drinkinKategoriat);
-            drinkinKategoriat.stream().forEach(s -> System.out.println(s.getNimi()));
+            
+            
             
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
 
         post("/drinkit/:id/:virhe", (req, res) -> {
+            
             if(req.params("virhe").equals("kategoria")){
                 String kategoria = req.queryParams("kategoria");
                 Drinkki drinkki = drinkkiDao.findOne(Integer.parseInt(req.params("id")));
@@ -171,6 +173,11 @@ public class Main {
                 
                 res.redirect("/drinkit/" + req.params("id") + "/ok");
                 
+            } else if(req.params("virhe").equals("ohje")) {
+              String ohje = req.queryParams("ohje");
+              drinkkiDao.lisaaOhje(ohje, Integer.parseInt(req.params("id")));
+                
+               res.redirect("/drinkit/" + req.params("id") + "/ok");
             } else {
             boolean virhe = false;
 

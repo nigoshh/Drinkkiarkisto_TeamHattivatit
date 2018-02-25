@@ -199,5 +199,19 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
         conn.close();
     } 
     
+    public void lisaaOhje(String ohje, Integer drinkki_id) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Drinkki SET ohje = ? "
+                + "WHERE id = ?");
+
+        stmt.setString(1, ohje);
+        stmt.setInt(2, drinkki_id);
+
+        stmt.executeUpdate();
+
+        stmt.close();
+        conn.close();
+    }
+    
     
 }

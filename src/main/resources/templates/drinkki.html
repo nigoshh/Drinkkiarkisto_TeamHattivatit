@@ -19,8 +19,19 @@
                 <span th:text="${raakaAineDrinkissa.maara}">maara</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a th:href="${'/drinkit/' + drinkki.id + '/poistaRaaka-aine/' + raakaAineDrinkissa.id}">Poista</a>
             </li>
-        </ul>
-
+        </ul> <br/>
+        
+        <p> Drinkin ohje:</p><br/>
+        <span th:text="${drinkki.ohje}">ohje</span><br/><br/>
+        
+        <p>Drinkki kuuluu kategorioihin:</p> 
+        <ul> 
+            <li th:each="DrinkinKategoria: ${DrinkinKategoriat}"> 
+                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>
+                <a th:href="${'/drinkit/' + drinkki.id + '/poistaKategoria/' + DrinkinKategoria.id}">Poista</a>
+            </li>
+        </ul>  
+        <hr></hr>
         <p>Lisää raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
         
         <p th:text="${virhe}" style="color:red;">error message</p>
@@ -42,17 +53,19 @@
             <input type="submit" value="Lisää raaka-aine"/> <br/> <br/>   
         </form> 
         
-        <p>Drinkki kuuluu kategorioihin:</p> 
-        <ul> 
-            <li th:each="DrinkinKategoria: ${DrinkinKategoriat}"> 
-                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>
-                <a th:href="${'/drinkit/' + drinkki.id + '/poistaKategoria/' + DrinkinKategoria.id}">Poista</a>
-            </li>
-        </ul>  
+        Päivitä drinkin ohje:
+        <form method = "POST" th:action="${'/drinkit/' + drinkki.id + '/ohje'}">
+
+            <textarea name="ohje" rows = "15" cols = "70" ></textarea>
+            <input type = "submit" value = "Lisää ohje" /><br/><br/>
+
+        </form>
+        
+        
         
         <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/kategoria'}">
             
-            Kategoria:<br/><br/>
+            Lisää kategoria:<br/><br/>
             <select name="kategoria">
                 <option th:each="drinkkiEiKategoriassa : ${drinkkiEiKategorioissa}" 
                         th:value="${drinkkiEiKategoriassa.nimi}" th:text="${drinkkiEiKategoriassa.nimi}"></option>
