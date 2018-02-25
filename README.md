@@ -6,6 +6,8 @@ Aihe: Drinkkiarkisto
 
 Ryhmä: Team Hattivatit
 
+Linkki sovellukseen: https://immense-caverns-85545.herokuapp.com/
+
 
 Sovelluksen kuvaus
 
