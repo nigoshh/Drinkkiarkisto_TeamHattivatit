@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import spark.ModelAndView;
+import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
@@ -20,12 +21,11 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:drinkit.db");
-        database.init();
 
-//        // herokun portille
-//        if (System.getenv("PORT") != null) {
-//            Spark.port(Integer.valueOf(System.getenv("PORT")));
-//        }
+        // herokun portille
+        if (System.getenv("PORT") != null) {
+            Spark.port(Integer.valueOf(System.getenv("PORT")));
+        }
         DrinkkiDao drinkkiDao = new DrinkkiDao(database);
         KategoriaDao kategoriaDao = new KategoriaDao(database);
         RaakaAineDao raakaAineDao = new RaakaAineDao(database);
