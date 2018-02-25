@@ -97,7 +97,7 @@ public class DrinkkiDao implements Dao<Drinkki, Integer> {
         }
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki, DrinkkiKategoria, Kategoria WHERE Drinkki.id = DrinkkiKategoria.drinkki_id AND Kategoria.id = DrinkkiKategoria.kategoria_id AND Kategoria.nimi = ? ORDER BY nimi");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Drinkki, DrinkkiKategoria, Kategoria WHERE Drinkki.id = DrinkkiKategoria.drinkki_id AND Kategoria.id = DrinkkiKategoria.kategoria_id AND Kategoria.nimi = ? ORDER BY Drinkki.nimi");
         stmt.setString(1, kategoria);
 
         ResultSet rs = stmt.executeQuery();
