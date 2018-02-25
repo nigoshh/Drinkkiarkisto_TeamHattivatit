@@ -11,8 +11,13 @@ public class Database {
     public Database(String databaseAddress) throws ClassNotFoundException {
         this.databaseAddress = databaseAddress;
     }
+    
+    public static Connection getConnection() throws SQLException {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        if (dbUrl != null && dbUrl.length() > 0) {
+            return DriverManager.getConnection(dbUrl);
+        }
 
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(databaseAddress);
+        return DriverManager.getConnection("jdbc:sqlite:drinkit.db");
     }
 }
