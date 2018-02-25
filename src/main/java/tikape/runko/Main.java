@@ -104,9 +104,9 @@ public class Main {
             String virhe = "";
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Drinkin nimi-kenttä";
-            } else if (req.params("virhe").substring(0, 2).equals("d_")) {
-                virhe += "Virhe! \"" + req.params("virhe").substring(2) + "\" on jo olemassa."
-                        + " Ole hyvä ja valitse toinen nimi.";
+            } else if (req.params("virhe").equals("d")) {
+                virhe += "Virhe! Drinkin nimi on jo käytössä. "
+                        + "Ole hyvä ja valitse toinen nimi.";
             }
             map.put("virhe", virhe);
 
@@ -120,7 +120,7 @@ public class Main {
             if (nimi.isEmpty()) {
                 virhe += "v";
             } else if (drinkkiDao.findOnebyName(nimi) != null) {
-                virhe += "d_" + nimi;
+                virhe += "d";
             }
             
             String redirUrl = "/";
@@ -222,6 +222,9 @@ public class Main {
             String virhe = "";
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Raaka-aineen nimi-kenttä";
+            } else if (req.params("virhe").equals("d")) {
+                virhe += "Virhe! Raaka-aineen nimi on jo olemassa. "
+                        + "Ole hyvä ja valitse toinen raaka-aineen nimi.";
             }
             map.put("virhe", virhe);
 
@@ -229,17 +232,19 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         post("/raaka-aineet/:virhe", (req, res) -> {
-            boolean virhe = false;
+            String virhe = "";
             
             String nimi = req.queryParams("nimi");
             if (nimi.isEmpty()) {
-                virhe = true;
+                virhe += "v";
+            } else if (raakaAineDao.findOnebyName(nimi) != null) {
+                virhe += "d";
             }
             
             String redirUrl = "/raaka-aineet/";
             
-            if (virhe) {
-                redirUrl += "v";
+            if (!virhe.isEmpty()) {
+                redirUrl += virhe;
             } else {
                 RaakaAine raakaAine = new RaakaAine(0, nimi);
                 raakaAineDao.save(raakaAine);
