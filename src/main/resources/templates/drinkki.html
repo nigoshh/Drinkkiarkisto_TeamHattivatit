@@ -27,7 +27,7 @@
         <p>Drinkki kuuluu kategorioihin:</p> 
         <ul> 
             <li th:each="DrinkinKategoria: ${DrinkinKategoriat}"> 
-                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>
+                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a th:href="${'/drinkit/' + drinkki.id + '/poistaKategoria/' + DrinkinKategoria.id}">Poista</a>
             </li>
         </ul>  
