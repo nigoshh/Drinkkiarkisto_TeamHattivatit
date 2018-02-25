@@ -45,6 +45,8 @@ public class Main {
         get("/drinkit/kategoriat/:kategoria", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("drinkit", drinkkiDao.findAllbyCategory(req.params("kategoria")));
+            
+            map.put("kategoria", req.params("kategoria"));
 
             return new ModelAndView(map, "drinkit");
         }, new ThymeleafTemplateEngine());
@@ -89,6 +91,9 @@ public class Main {
             String virhe = "";
             if (req.params("virhe").equals("v")) {
                 virhe += "Virhe! Ole hyvä ja täytä Drinkin nimi-kenttä";
+            } else if (req.params("virhe").substring(0, 2).equals("d_")) {
+                virhe += "Virhe! \"" + req.params("virhe").substring(2) + "\" on jo olemassa."
+                        + " Ole hyvä ja valitse toinen nimi.";
             }
             map.put("virhe", virhe);
 
@@ -96,16 +101,19 @@ public class Main {
         }, new ThymeleafTemplateEngine());
 
         post("/lisaa/:virhe", (req, res) -> {
-            boolean virhe = false;
+            String virhe = "";
             
             String nimi = req.queryParams("nimi");
             if (nimi.isEmpty()) {
-                virhe = true;
+                virhe += "v";
+            } else if (drinkkiDao.findOnebyName(nimi) != null) {
+                virhe += "d_" + nimi;
             }
             
             String redirUrl = "/";
-            if (virhe) {
-                redirUrl += "lisaa/v";
+            
+            if (!virhe.isEmpty()) {
+                redirUrl += "lisaa/" + virhe;
             } else {
                 drinkkiDao.save(new Drinkki(0, nimi, ""));
 
