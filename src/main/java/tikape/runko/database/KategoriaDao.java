@@ -86,6 +86,53 @@ public class KategoriaDao implements Dao<Kategoria, Integer> {
 
         return d;
     }
+    
+    public List<Kategoria> findAllInDrink(Integer key) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT Kategoria.id,"
+                + "Kategoria.nimi FROM Kategoria, "
+                + "DrinkkiKategoria WHERE DrinkkiKategoria.drinkki_id = ?"
+                + "AND DrinkkiKategoria.kategoria_id = Kategoria.Id ORDER BY Kategoria.nimi");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Kategoria> kategoriat = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            kategoriat.add(new Kategoria(id, nimi));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return kategoriat;
+    }
+    
+    public List<Kategoria> findAllNotInDrink(Integer key) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Kategoria "
+                + "WHERE id NOT IN (SELECT DISTINCT kategoria_id from DrinkkiKategoria "
+                + "WHERE DrinkkiKategoria.drinkki_id = ?) ORDER BY nimi");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Kategoria> kategoriat = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            kategoriat.add(new Kategoria(id, nimi));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return kategoriat;
+    }
 
     @Override
     public void delete(Integer key) throws SQLException {
@@ -129,4 +176,17 @@ public class KategoriaDao implements Dao<Kategoria, Integer> {
 
         conn.close();
     }
+        
+        public void poistaDrinkki(Integer kategoria_id, int drinkki_id) throws SQLException {
+            Connection conn = database.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM DrinkkiKategoria "
+                + "WHERE drinkki_id = ? AND kategoria_id = ?");
+            stmt.setInt(1, drinkki_id);
+            stmt.setInt(2, kategoria_id);
+
+            stmt.executeUpdate();
+            stmt.close();
+
+            conn.close();
+        }
 }
