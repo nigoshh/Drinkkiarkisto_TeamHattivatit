@@ -9,7 +9,7 @@
     <body>
         <h1><span th:text="${drinkki.nimi}">drinkki</span></h1>
 
-        <p>Täältä näet drinkin ominaisuuksia, ja pystyt muokkaamaan niitä.</p>
+        <p>T&auml;&auml;lt&auml; n&auml;et drinkin ominaisuuksia, ja pystyt muokkaamaan niit&auml;.</p>
 
         <p>Drinkin <span th:text="${drinkki.nimi}">drinkki</span> raaka-aineita:</p>
 
@@ -27,12 +27,12 @@
         <p>Drinkki kuuluu kategorioihin:</p> 
         <ul> 
             <li th:each="DrinkinKategoria: ${DrinkinKategoriat}"> 
-                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>
+                <span th:text="${DrinkinKategoria.nimi}">kategorian nimi</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a th:href="${'/drinkit/' + drinkki.id + '/poistaKategoria/' + DrinkinKategoria.id}">Poista</a>
             </li>
         </ul>  
         <hr></hr>
-        <p>Lisää raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
+        <p>Lis&auml;&auml; raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
         
         <p th:text="${virhe}" style="color:red;">error message</p>
         
@@ -43,21 +43,21 @@
                         th:value="${raakaAineEiDrinkissa.nimi}" th:text="${raakaAineEiDrinkissa.nimi}"></option>
             </select>
             
-            <span>Määrä:</span>
+            <span>M&auml;&auml;r&auml;:</span>
             <input type="text" name="maara"/>
             
-            <span>Järjestysnumero:</span>
+            <span>J&auml;rjestysnumero:</span>
             <input type="text" name="jarjestys"/>
 
 
-            <input type="submit" value="Lisää raaka-aine"/> <br/> <br/>   
+            <input type="submit" value="Lis&auml;&auml; raaka-aine"/> <br/> <br/>   
         </form> 
         
-        Päivitä drinkin ohje:
+        P&auml;ivit&auml; drinkin ohje:
         <form method = "POST" th:action="${'/drinkit/' + drinkki.id + '/ohje'}">
 
             <textarea name="ohje" rows = "15" cols = "70" ></textarea>
-            <input type = "submit" value = "Lisää ohje" /><br/><br/>
+            <input type = "submit" value = "Lis&auml;&auml; ohje" /><br/><br/>
 
         </form>
         
@@ -65,18 +65,18 @@
         
         <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/kategoria'}">
             
-            Lisää kategoria:<br/><br/>
+            Lis&auml;&auml; kategoria:<br/><br/>
             <select name="kategoria">
                 <option th:each="drinkkiEiKategoriassa : ${drinkkiEiKategorioissa}" 
                         th:value="${drinkkiEiKategoriassa.nimi}" th:text="${drinkkiEiKategoriassa.nimi}"></option>
             </select><br/><br/>
-            <input type="submit" value="Lisää kategoria"/>
+            <input type="submit" value="Lis&auml;&auml; kategoria"/>
             
         </form>
         
-        <br/><a href="/raaka-aineet/ok">Tarkastele ja lisää raaka-aineita</a>
+        <br/><a href="/raaka-aineet/ok">Tarkastele ja lis&auml;&auml; raaka-aineita</a>
         <p><a th:href="${'/drinkit/poista/' + drinkki.id}">Poista drinkki <span th:text="${drinkki.nimi}">drinkki</span></a></p>
-        <br/><p><a href="/drinkit">Tästä drinkkilistaukseen</a></p>
-        <p><a href="/lisaa/ok">Lisää drinkki</a></p>
+        <br/><p><a href="/drinkit">T&auml;st&auml; drinkkilistaukseen</a></p>
+        <p><a href="/lisaa/ok">Lis&auml;&auml; drinkki</a></p>
     </body>
 </html>

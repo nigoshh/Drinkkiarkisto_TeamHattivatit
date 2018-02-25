@@ -90,9 +90,18 @@ public class Main {
         get("/raaka-aineet/poista/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             
-            raakaAineDao.delete(Integer.parseInt(req.params("id")));
+            int raId = Integer.parseInt(req.params("id"));
             
-            res.redirect("/raaka-aineet/ok");
+            String redirUrl = "/raaka-aineet/";
+            
+            if (raakaAineDao.onkoKaytossa(raId)) {
+                redirUrl += "s";
+            } else {
+                raakaAineDao.delete(raId);
+                redirUrl += "ok";
+            }
+
+            res.redirect(redirUrl);
 
             return new ModelAndView(map, "raaka-aineet");
         }, new ThymeleafTemplateEngine());
@@ -232,6 +241,8 @@ public class Main {
             } else if (req.params("virhe").equals("d")) {
                 virhe += "Virhe! Raaka-aineen nimi on jo olemassa. "
                         + "Ole hyvä ja valitse toinen raaka-aineen nimi.";
+            } else if (req.params("virhe").equals("s")) {
+                virhe += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä.";
             }
             map.put("virhe", virhe);
 
