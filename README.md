@@ -6,7 +6,7 @@ Aihe: Drinkkiarkisto
 
 Ryhmä: Team Hattivatit
 
-Linkki sovellukseen: https://immense-caverns-85545.herokuapp.com/
+Linkki sovellukseen: https://supermariodrinksonlypuuro.herokuapp.com/
 
 
 Sovelluksen kuvaus
