@@ -127,7 +127,7 @@ public class Main {
         post("/lisaa/:virhe", (req, res) -> {
             String virhe = "";
 
-            String nimi = req.queryParams("nimi");
+            String nimi = req.queryParams("nimi").trim();
             if (nimi.isEmpty()) {
                 virhe += "v";
             } else if (drinkkiDao.findOnebyName(nimi) != null) {
@@ -193,26 +193,27 @@ public class Main {
                 res.redirect("/drinkit/" + req.params("id") + "/ok");
 
             } else if (req.params("virhe").equals("ohje")) {
-                String ohje = req.queryParams("ohje");
+                String ohje = req.queryParams("ohje").trim();
                 drinkkiDao.lisaaOhje(ohje, Integer.parseInt(req.params("id")));
 
                 res.redirect("/drinkit/" + req.params("id") + "/ok");
             } else {
                 boolean virhe = false;
 
-                String nimi = req.queryParams("nimi");
+                String nimi = req.queryParams("nimi").trim();
                 if (nimi.isEmpty()) {
                     virhe = true;
                 }
 
                 int jarjestys = 0;
-                if (isIntegerAndShort(req.queryParams("jarjestys"))) {
-                    jarjestys = Integer.parseInt(req.queryParams("jarjestys"));
+                String j = req.queryParams("jarjestys").trim();
+                if (isIntegerAndShort(j)) {
+                    jarjestys = Integer.parseInt(j);
                 } else {
                     virhe = true;
                 }
 
-                String maara = req.queryParams("maara");
+                String maara = req.queryParams("maara").trim();
                 if (maara.isEmpty()) {
                     virhe = true;
                 }
@@ -254,7 +255,7 @@ public class Main {
         post("/raaka-aineet/:virhe", (req, res) -> {
             String virhe = "";
 
-            String nimi = req.queryParams("nimi");
+            String nimi = req.queryParams("nimi").trim();
             if (nimi.isEmpty()) {
                 virhe += "v";
             } else if (raakaAineDao.findOnebyName(nimi) != null) {
