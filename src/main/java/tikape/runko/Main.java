@@ -158,8 +158,9 @@ public class Main {
             String virhe = "";
 
             if (req.params("virhe").equals("v")) {
-                virhe += "Virhe! Ole hyvä ja täytä Määrä ja Järjestys -kentät"
-                        + " (Järjestys-kenttään pelkästään kokonaislukuja)";
+                virhe += "Virhe! Ole hyvä ja täytä Määrä ja Järjestysnumero -kentät"
+                        + " (Järjestysnumero-kenttään pelkästään kokonaislukuja"
+                        + " välillä [-99999999,999999999])";
             }
 
             map.put("virhe", virhe);
@@ -204,7 +205,7 @@ public class Main {
                 }
 
                 int jarjestys = 0;
-                if (isInteger(req.queryParams("jarjestys"))) {
+                if (isIntegerAndShort(req.queryParams("jarjestys"))) {
                     jarjestys = Integer.parseInt(req.queryParams("jarjestys"));
                 } else {
                     virhe = true;
@@ -274,12 +275,12 @@ public class Main {
         });
     }
 
-    public static boolean isInteger(String str) {
+    public static boolean isIntegerAndShort(String str) {
         if (str == null) {
             return false;
         }
         int length = str.length();
-        if (length == 0) {
+        if (length == 0 || length > 9) {
             return false;
         }
         int i = 0;

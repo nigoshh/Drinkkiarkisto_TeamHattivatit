@@ -44,10 +44,10 @@
             </select>
             
             <span>M&auml;&auml;r&auml;:</span>
-            <input type="text" name="maara"/>
+            <input type="text" name="maara" maxlength="300"/>
             
             <span>J&auml;rjestysnumero:</span>
-            <input type="text" name="jarjestys"/>
+            <input type="text" name="jarjestys" maxlength="9"/>
 
 
             <input type="submit" value="Lis&auml;&auml; raaka-aine"/> <br/> <br/>   
@@ -56,7 +56,7 @@
         P&auml;ivit&auml; drinkin ohje:
         <form method = "POST" th:action="${'/drinkit/' + drinkki.id + '/ohje'}">
 
-            <textarea name="ohje" rows = "15" cols = "70" ></textarea>
+            <textarea name="ohje" rows = "15" cols = "70" maxlength="1500" ></textarea>
             <input type = "submit" value = "Lis&auml;&auml; ohje" /><br/><br/>
 
         </form>

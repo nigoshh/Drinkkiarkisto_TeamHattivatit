@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Database {
 
-    private String databaseAddress;
+    static String databaseAddress;
 
     public Database(String databaseAddress) throws ClassNotFoundException {
         this.databaseAddress = databaseAddress;
@@ -18,6 +18,6 @@ public class Database {
             return DriverManager.getConnection(dbUrl);
         }
 
-        return DriverManager.getConnection("jdbc:sqlite:drinkit.db");
+        return DriverManager.getConnection(databaseAddress);
     }
 }
