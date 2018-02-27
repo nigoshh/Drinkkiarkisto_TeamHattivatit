@@ -2,12 +2,12 @@ SQLite
 CREATE TABLE Drinkki (id integer PRIMARY KEY, nimi varchar(255), ohje varchar(1500));
 CREATE TABLE Kategoria (id integer PRIMARY KEY, nimi varchar(255));
 CREATE TABLE RaakaAine (id integer PRIMARY KEY, nimi varchar(255));
-CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id integer, nimi varchar(255), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));
+CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id integer, FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));
 CREATE TABLE DrinkkiRaakaAine (raakaaine_id integer, drinkki_id integer, jarjestys integer, maara varchar(300), FOREIGN KEY (raakaaine_id) REFERENCES RaakaAine(id), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id));
 
 PostgreSQL
 CREATE TABLE Drinkki (id SERIAL PRIMARY KEY, nimi varchar(255), ohje varchar(1500));
 CREATE TABLE Kategoria (id SERIAL PRIMARY KEY, nimi varchar(255));
 CREATE TABLE RaakaAine (id SERIAL PRIMARY KEY, nimi varchar(255));
-CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id integer, nimi varchar(255), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));
+CREATE TABLE DrinkkiKategoria (drinkki_id integer, kategoria_id integer, FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id), FOREIGN KEY (kategoria_id) REFERENCES Kategoria(id));
 CREATE TABLE DrinkkiRaakaAine (raakaaine_id integer, drinkki_id integer, jarjestys integer, maara varchar(300), FOREIGN KEY (raakaaine_id) REFERENCES RaakaAine(id), FOREIGN KEY (drinkki_id) REFERENCES Drinkki(id));
