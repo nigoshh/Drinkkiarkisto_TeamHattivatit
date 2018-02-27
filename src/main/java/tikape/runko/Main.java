@@ -112,14 +112,14 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("lisaa", drinkkiDao.findAll());
 
-            String virhe = "";
+            String virheviesti = "";
             if (req.params("virhe").equals("v")) {
-                virhe += "Virhe! Ole hyvä ja täytä Drinkin nimi-kenttä";
+                virheviesti += "Virhe! Ole hyvä ja täytä Drinkin nimi-kenttä";
             } else if (req.params("virhe").equals("d")) {
-                virhe += "Virhe! Drinkin nimi on jo käytössä; "
+                virheviesti += "Virhe! Drinkin nimi on jo käytössä; "
                         + "ole hyvä ja valitse toinen nimi";
             }
-            map.put("virhe", virhe);
+            map.put("virhe", virheviesti);
 
             return new ModelAndView(map, "lisaa");
         }, new ThymeleafTemplateEngine());
@@ -155,15 +155,16 @@ public class Main {
             int drinkkiId = Integer.parseInt(req.params("id"));
             map.put("drinkki", drinkkiDao.findOne(drinkkiId));
 
-            String virhe = "";
-
-            if (req.params("virhe").equals("v")) {
-                virhe += "Virhe! Ole hyvä ja täytä Määrä ja Järjestysnumero -kentät"
+            String virheviesti = "";
+            
+            String virhe = req.params("virhe");
+            if (virhe.equals("v")) {
+                virheviesti += "Virhe! Ole hyvä ja täytä Määrä ja Järjestysnumero -kentät"
                         + " (Järjestysnumero-kenttään pelkästään kokonaislukuja"
-                        + " välillä [-99999999,999999999])";
+                        + " välillä [-99999999, 999999999])";
             }
 
-            map.put("virhe", virhe);
+            map.put("virhe", virheviesti);
 
             List<RaakaAineDrinkissa> raakaAineetDrinkissa
                     = raakaAineDao.findAllInDrink(drinkkiId);
@@ -236,16 +237,16 @@ public class Main {
             map.put("raakaAineet", raakaAineDao.findAll());
             map.put("tilasto", raakaAineDao.findStatistics());
 
-            String virhe = "";
+            String virheviesti = "";
             if (req.params("virhe").equals("v")) {
-                virhe += "Virhe! Ole hyvä ja täytä Raaka-aineen nimi-kenttä";
+                virheviesti += "Virhe! Ole hyvä ja täytä Raaka-aineen nimi-kenttä";
             } else if (req.params("virhe").equals("d")) {
-                virhe += "Virhe! Raaka-aineen nimi on jo olemassa; "
+                virheviesti += "Virhe! Raaka-aineen nimi on jo olemassa; "
                         + "ole hyvä ja valitse toinen raaka-aineen nimi";
             } else if (req.params("virhe").equals("s")) {
-                virhe += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä";
+                virheviesti += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä";
             }
-            map.put("virhe", virhe);
+            map.put("virhe", virheviesti);
 
             return new ModelAndView(map, "raaka-aineet");
         }, new ThymeleafTemplateEngine());
