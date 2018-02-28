@@ -37,8 +37,6 @@
         <hr></hr>
         <p>Lis&auml;&auml; raaka-aine drinkkiin <span th:text="${drinkki.nimi}">drinkki</span>:</p>
         
-        <p th:text="${virhe}" style="color:red;">error message</p>
-        
         <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/ok'}">
 
             <select name="nimi">
