@@ -37,9 +37,15 @@ public class Main {
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
-        get("/drinkit", (req, res) -> {
+        get("/drinkit/:viesti", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("drinkit", drinkkiDao.findAll());
+            
+            String onnistumisenViesti = "";
+            if (req.params("viesti").equals("p")) {
+                onnistumisenViesti += "Drinkin poistaminen onnistui!";
+            }
+            map.put("onnistui", onnistumisenViesti);
 
             return new ModelAndView(map, "drinkit");
         }, new ThymeleafTemplateEngine());
@@ -58,7 +64,7 @@ public class Main {
 
             drinkkiDao.delete(Integer.parseInt(req.params("id")));
 
-            res.redirect("/drinkit");
+            res.redirect("/drinkit/p");
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
@@ -71,7 +77,7 @@ public class Main {
 
             drinkkiDao.poistaRaakaAine(drinkkiId, raId);
 
-            res.redirect("/drinkit/" + req.params("drinkkiId") + "/ok");
+            res.redirect("/drinkit/" + req.params("drinkkiId") + "/p");
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
@@ -84,7 +90,7 @@ public class Main {
 
             kategoriaDao.poistaDrinkki(kId, drinkkiId);
 
-            res.redirect("/drinkit/" + req.params("drinkkiId") + "/ok");
+            res.redirect("/drinkit/" + req.params("drinkkiId") + "/p");
 
             return new ModelAndView(map, "drinkki");
         }, new ThymeleafTemplateEngine());
@@ -100,7 +106,7 @@ public class Main {
                 redirUrl += "s";
             } else {
                 raakaAineDao.delete(raId);
-                redirUrl += "ok";
+                redirUrl += "p";
             }
 
             res.redirect(redirUrl);
@@ -156,15 +162,21 @@ public class Main {
             map.put("drinkki", drinkkiDao.findOne(drinkkiId));
 
             String virheviesti = "";
+            String onnistumisenViesti = "";
             
             String virhe = req.params("virhe");
             if (virhe.equals("v")) {
                 virheviesti += "Virhe! Ole hyvä ja täytä Määrä ja Järjestysnumero -kentät"
                         + " (Järjestysnumero-kenttään pelkästään kokonaislukuja"
                         + " välillä [-99999999, 999999999])";
+            } else if (virhe.equals("l")) {
+                onnistumisenViesti += "Tiedon lisääminen onnistui!";
+            } else if (virhe.equals("p")) {
+                onnistumisenViesti += "Tiedon poistaminen onnistui!";
             }
 
             map.put("virhe", virheviesti);
+            map.put("onnistui", onnistumisenViesti);
 
             List<RaakaAineDrinkissa> raakaAineetDrinkissa
                     = raakaAineDao.findAllInDrink(drinkkiId);
@@ -190,13 +202,13 @@ public class Main {
                 Drinkki drinkki = drinkkiDao.findOne(Integer.parseInt(req.params("id")));
                 kategoriaDao.lisaaDrinkki(kategoriaDao.findOnebyName(kategoria), drinkki);
 
-                res.redirect("/drinkit/" + req.params("id") + "/ok");
+                res.redirect("/drinkit/" + req.params("id") + "/l");
 
             } else if (req.params("virhe").equals("ohje")) {
                 String ohje = req.queryParams("ohje").trim();
                 drinkkiDao.lisaaOhje(ohje, Integer.parseInt(req.params("id")));
 
-                res.redirect("/drinkit/" + req.params("id") + "/ok");
+                res.redirect("/drinkit/" + req.params("id") + "/l");
             } else {
                 boolean virhe = false;
 
@@ -225,7 +237,7 @@ public class Main {
                 } else {
                     drinkkiDao.lisaaRaakaAine(drinkkiDao.findOne(Integer.parseInt(req.params("id"))),
                             raakaAineDao.findOnebyName(nimi), jarjestys, maara);
-                    redirUrl += "ok";
+                    redirUrl += "l";
                 }
 
                 res.redirect(redirUrl);
@@ -239,15 +251,24 @@ public class Main {
             map.put("tilasto", raakaAineDao.findStatistics());
 
             String virheviesti = "";
-            if (req.params("virhe").equals("v")) {
+            String onnistumisenViesti = "";
+            
+            String virhe = req.params("virhe");
+            if (virhe.equals("v")) {
                 virheviesti += "Virhe! Ole hyvä ja täytä Raaka-aineen nimi-kenttä";
-            } else if (req.params("virhe").equals("d")) {
+            } else if (virhe.equals("d")) {
                 virheviesti += "Virhe! Raaka-aineen nimi on jo olemassa; "
                         + "ole hyvä ja valitse toinen raaka-aineen nimi";
-            } else if (req.params("virhe").equals("s")) {
+            } else if (virhe.equals("s")) {
                 virheviesti += "Virhe! Et voi poistaa raaka-ainetta joka on käytössä";
+            } else if (virhe.equals("l")) {
+                onnistumisenViesti += "Tiedon lisääminen onnistui!";
+            } else if (virhe.equals("p")) {
+                onnistumisenViesti += "Tiedon poistaminen onnistui!";
             }
+            
             map.put("virhe", virheviesti);
+            map.put("onnistui", onnistumisenViesti);
 
             return new ModelAndView(map, "raaka-aineet");
         }, new ThymeleafTemplateEngine());
@@ -269,7 +290,7 @@ public class Main {
             } else {
                 RaakaAine raakaAine = new RaakaAine(0, nimi);
                 raakaAineDao.save(raakaAine);
-                redirUrl += "ok";
+                redirUrl += "l";
             }
 
             res.redirect(redirUrl);

@@ -7,15 +7,15 @@
     </head>
     
     <body>
+        <p th:text="${virhe}" style="color:red;">error message</p>
+        
         <form method="POST" action="/lisaa/ok">
             <span>Drinkin nimi:</span><br/>
             <input type="text" name="nimi" maxlength="255"/><br/><br/>
             <input type="submit" value="Lis&auml;&auml; drinkki"/><br/>
         </form>
         
-        <p th:text="${virhe}" style="color:red;">error message</p>
-        
-        <br/><p><a href="/drinkit">T&auml;st&auml; drinkkilistaukseen</a></p>
+        <br/><p><a href="/drinkit/ok">T&auml;st&auml; drinkkilistaukseen</a></p>
         <p><a href="/raaka-aineet/ok">Tarkastele ja lis&auml;&auml; raaka-aineita</a></p>
     </body>
 </html>

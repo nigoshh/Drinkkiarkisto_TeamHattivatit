@@ -7,6 +7,9 @@
     </head>
 
     <body>
+        <p th:text="${virhe}" style="color:red;">error message</p>
+        <p th:text="${onnistui}" style="color:blue;">success message</p>
+        
         <h1>Raaka-aineet</h1>
         <ul>
             <li th:each="raakaAine: ${raakaAineet}">
@@ -22,8 +25,6 @@
             <input type="submit" value="Lis&auml;&auml; raaka-aine"/><br/>    
         </form>
         
-        <p th:text="${virhe}" style="color:red;">error message</p>
-        
         <h1>Raaka-ainetilasto</h1>
         <ul>
             <li th:each="rivi: ${tilasto}">
@@ -31,7 +32,7 @@
             </li>
         </ul>
         
-        <p><a href="/drinkit">T&auml;st&auml; drinkkilistaukseen</a></p>
+        <p><a href="/drinkit/ok">T&auml;st&auml; drinkkilistaukseen</a></p>
         <p><a href="/lisaa/ok">Lis&auml;&auml; drinkki</a></p>
 
     </body>

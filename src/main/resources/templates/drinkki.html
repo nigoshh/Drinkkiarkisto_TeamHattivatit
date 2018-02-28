@@ -7,6 +7,9 @@
     </head>
 
     <body>
+        <p th:text="${virhe}" style="color:red;">error message</p>
+        <p th:text="${onnistui}" style="color:blue;">success message</p>
+        
         <h1><span th:text="${drinkki.nimi}">drinkki</span></h1>
 
         <p>T&auml;&auml;lt&auml; n&auml;et drinkin ominaisuuksia, ja pystyt muokkaamaan niit&auml;.</p>
@@ -61,8 +64,6 @@
 
         </form>
         
-        
-        
         <form method="POST" th:action="${'/drinkit/' + drinkki.id + '/kategoria'}">
             
             Lis&auml;&auml; kategoria:<br/><br/>
@@ -76,7 +77,7 @@
         
         <br/><a href="/raaka-aineet/ok">Tarkastele ja lis&auml;&auml; raaka-aineita</a>
         <p><a th:href="${'/drinkit/poista/' + drinkki.id}">Poista drinkki <span th:text="${drinkki.nimi}">drinkki</span></a></p>
-        <br/><p><a href="/drinkit">T&auml;st&auml; drinkkilistaukseen</a></p>
+        <br/><p><a href="/drinkit/ok">T&auml;st&auml; drinkkilistaukseen</a></p>
         <p><a href="/lisaa/ok">Lis&auml;&auml; drinkki</a></p>
     </body>
 </html>
