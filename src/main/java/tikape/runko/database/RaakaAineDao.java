@@ -137,7 +137,7 @@ public class RaakaAineDao implements Dao<RaakaAine, Integer> {
 
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.nimi "
-                + "AS nimi, COUNT(*) AS total FROM RaakaAine LEFT JOIN "
+                + "AS nimi, COUNT(DrinkkiRaakaAine.raakaaine_id) AS total FROM RaakaAine LEFT JOIN "
                 + "DrinkkiRaakaAine ON RaakaAine.id = DrinkkiRaakaAine.raakaaine_id "
                 + "GROUP BY nimi ORDER BY total DESC, nimi");
 
